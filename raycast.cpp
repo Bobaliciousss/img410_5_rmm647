@@ -39,6 +39,7 @@ struct shape {
     float *position;
     float *cDiff;
     float *cSpec;
+    float reflection = 0.f;
 
     shape() {
         position = new float[3]{ 0.f, 0.f, 0.f };
@@ -412,7 +413,7 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
             }
             else if ( tempPropString == "direction:" ) {
 
-                fscanf(stream, "%f %f %f",
+                fscanf( stream, "%f %f %f",
                     &( *lights )[ lightsTableIndex ]->direction[0],
                     &( *lights )[ lightsTableIndex ]->direction[1],
                     &( *lights )[ lightsTableIndex ]->direction[2] );
@@ -422,6 +423,14 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                         << ( *lights )[ lightsTableIndex ]->direction[1] << " " 
                         << ( *lights )[ lightsTableIndex ]->direction[2] << std::endl;
                 }
+
+            }
+            else if ( tempPropString == "reflection:" ) {
+
+                assert( fscanf( stream, "%f", &( *objects )[ objectsTableIndex ]->reflection ) == 1 );
+
+                // if ( verbose == true )
+                    std::cout << ( *objects )[ objectsTableIndex ]->reflection << std::endl;
 
             }
 
@@ -448,6 +457,12 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
     *numberOfLights = ( lightsTableIndex + 1 );
 
     return 0;
+
+}
+
+void recurse(  ) {
+
+
 
 }
 
@@ -494,6 +509,9 @@ int main(int argc, char *argv[])
                     float rVector[3] = { rDistX, rDistY, -1 }; 
                     float R_d[3] = { 0, 0, 0 };
                     v3_normalize( R_d, rVector );
+
+                    
+
                     float closestT = std::numeric_limits<float>::infinity();
                     int closestObjectIndex = -1;
 
