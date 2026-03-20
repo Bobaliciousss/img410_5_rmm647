@@ -407,7 +407,7 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape **objects, int 
                         
     }
 
-    float foundNormal[3] = { 0, 0, 0 };
+    float normal[3] = { 0, 0, 0 };
     float I_ds[3] = { 0, 0, 0 };
     float I_rf[3] = { 0, 0, 0 };
     float reflectionConstant = 0;
@@ -458,21 +458,20 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape **objects, int 
 
                 if ( objects[ closestObjectIndex ]->getShapeType() == "Plane" ) {
 
-                    objects[ closestObjectIndex ]->getNormal( foundNormal );
+                    objects[ closestObjectIndex ]->getNormal( normal );
                     reflectionConstant = objects[ closestObjectIndex ]->reflection;
 
                 }
                 else if (  objects[ closestObjectIndex ]->getShapeType() == "Sphere"  ) {
 
-                    foundNormal[0] = L_o[0] - objects[ closestObjectIndex ]->position[0];
-                    foundNormal[1] = L_o[1] - objects[ closestObjectIndex ]->position[1];
-                    foundNormal[2] = L_o[2] - objects[ closestObjectIndex ]->position[2];
+                    normal[0] = L_o[0] - objects[ closestObjectIndex ]->position[0];
+                    normal[1] = L_o[1] - objects[ closestObjectIndex ]->position[1];
+                    normal[2] = L_o[2] - objects[ closestObjectIndex ]->position[2];
                     reflectionConstant = objects[ closestObjectIndex ]->reflection;
 
                 }
 
-                float normal[3] = { 0, 0, 0 };
-                v3_normalize( normal, foundNormal );
+                v3_normalize( normal, normal );
 
                 float O_spec[3] = { 0, 0, 0 };
                 O_spec[0] = objects[ closestObjectIndex ]->cSpec[0];
@@ -545,15 +544,19 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape **objects, int 
 
     }
     
-    if ( inShadow == false ) {
+    if ( closestObjectIndex != -1 ) {
 
         // Intersection position in origin + t * direction
-        float reflectionPosition[3] = { R_d[1], R_d[2], R_d[3] };
+        float reflectionPosition[3] = { R_d[0], R_d[1], R_d[2] };
         v3_scale( reflectionPosition, closestT );
         v3_add( reflectionPosition, R_o, reflectionPosition );
+        float epsilon = 0.0001f;
+        reflectionPosition[0] += normal[0] * epsilon;
+        reflectionPosition[1] += normal[1] * epsilon;
+        reflectionPosition[2] += normal[2] * epsilon;
 
         float reflectionDirection[3] = { 0.f, 0.f, 0.f };
-        v3_reflect( reflectionDirection, R_d, foundNormal );
+        v3_reflect( reflectionDirection, R_d, normal );
         v3_normalize( reflectionDirection, reflectionDirection );
 
         // Make sure this recurses into I_rf not I
