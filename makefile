@@ -7,13 +7,13 @@ CFLAGS = -Wall -g
 CXXFLAGS = -Wall -g
 
 # Target executable
-TARGET = raycast
+TARGET = raytrace
 
-TARGET_DEL = raycast.exe
+TARGET_DEL = raytrace.exe
 
 # Source files
 C_SRCS = v3math.c
-CPP_SRCS = raycast.cpp ppm.cpp 
+CPP_SRCS = raytrace.cpp ppm.cpp 
 
 # Object files
 C_OBJS = $(C_SRCS:.c=.o)
