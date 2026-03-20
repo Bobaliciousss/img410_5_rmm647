@@ -11,7 +11,6 @@ extern "C" {
     #include "v3math.h"
 }
 
-bool verbose = false; // Set to true to print debug statements
 int maxRecursionLevel = 7; // How many times light ray will bounce at max
 
 float clamp( float value, float minimum, float maximum ) {
@@ -250,23 +249,14 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
             assert( tempInnerResult > 0 );
             tempPropString = tempProperty;
 
-            if ( verbose == true ) 
-                std::cout << "Scanned " << tempPropString << " for " << tempObjString << ": ";
-
             if ( tempPropString == "height:" ) {
 
                 assert( fscanf( stream, "%f", &( camera->height ) ) == 1 );
-
-                if ( verbose == true )
-                    std::cout << camera->height << std::endl;
 
             }
             else if ( tempPropString == "width:" ) {
 
                 assert( fscanf( stream, "%f", &( camera->width ) ) == 1 );
-
-                if ( verbose == true )
-                    std::cout << camera->width << std::endl;
 
             }
             else if ( tempPropString == "position:" ) {
@@ -278,11 +268,6 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                         &( *lights )[ lightsTableIndex ]->position[1],
                         &( *lights )[ lightsTableIndex ]->position[2] );
 
-                    if ( verbose == true ) {
-                        std::cout << ( *lights )[ lightsTableIndex ]->position[0] << " " 
-                            << ( *lights )[ lightsTableIndex ]->position[1] << " " 
-                            << ( *lights )[ lightsTableIndex ]->position[2] << std::endl;
-                    }
                 }
                 else {
 
@@ -290,12 +275,6 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                         &( *objects )[ objectsTableIndex ]->position[0],
                         &( *objects )[ objectsTableIndex ]->position[1],
                         &( *objects )[ objectsTableIndex ]->position[2] );
-
-                    if ( verbose == true ) {
-                        std::cout << ( *objects )[ objectsTableIndex ]->position[0] << " " 
-                            << ( *objects )[ objectsTableIndex ]->position[1] << " " 
-                            << ( *objects )[ objectsTableIndex ]->position[2] << std::endl;
-                    }
 
                 }
 
@@ -305,9 +284,6 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                 float radius;
                 fscanf( stream, "%f", &radius );
                 ( *objects )[ objectsTableIndex ]->setRadius( radius );
-
-                if ( verbose == true )
-                    std::cout << radius << std::endl;
                 
             }
             else if ( tempPropString == "normal:" ) {
@@ -315,14 +291,6 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                 float normal[3] ;
                 fscanf( stream, "%f %f %f", &( normal[0] ), &( normal[1] ), &( normal[2] ) );
                 ( *objects )[ objectsTableIndex ]->setNormal( normal );
-
-                if ( verbose == true ) {
-                    float scannedNormal[3];
-                    ( *objects )[ objectsTableIndex ]->getNormal( scannedNormal );
-                    std::cout << scannedNormal[0] << " " 
-                        << scannedNormal[1] << " " 
-                        << scannedNormal[2] << std::endl;
-                }
 
             }
             else if ( tempPropString == "c_diff:" ) {
@@ -332,12 +300,6 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                     &( *objects )[ objectsTableIndex ]->cDiff[1],
                     &( *objects )[ objectsTableIndex ]->cDiff[2] );
 
-                if ( verbose == true ) {
-                    std::cout << ( *objects )[ objectsTableIndex ]->cDiff[0] << " " 
-                        << ( *objects )[ objectsTableIndex ]->cDiff[1] << " " 
-                        << ( *objects )[ objectsTableIndex ]->cDiff[2] << std::endl;
-                }
-
             }
             else if ( tempPropString == "c_spec:" ) {
 
@@ -345,12 +307,6 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                     &( *objects )[ objectsTableIndex ]->cSpec[0],
                     &( *objects )[ objectsTableIndex ]->cSpec[1],
                     &( *objects )[ objectsTableIndex ]->cSpec[2] );
-
-                if ( verbose == true ) {
-                    std::cout << ( *objects )[ objectsTableIndex ]->cSpec[0] << " " 
-                        << ( *objects )[ objectsTableIndex ]->cSpec[1] << " " 
-                        << ( *objects )[ objectsTableIndex ]->cSpec[2] << std::endl;
-                }
 
             }
             else if ( tempPropString == "color:" ) {
@@ -360,35 +316,20 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                     &( *lights )[ lightsTableIndex ]->color[1],
                     &( *lights )[ lightsTableIndex ]->color[2] );
 
-                if ( verbose == true ) {
-                    std::cout << ( *lights )[ lightsTableIndex ]->color[0] << " " 
-                        << ( *lights )[ lightsTableIndex ]->color[1] << " " 
-                        << ( *lights )[ lightsTableIndex ]->color[2] << std::endl;
-                }
-
             }
             else if ( tempPropString == "radial_a0:" ) {
 
                 fscanf( stream, "%f", &( *lights )[ lightsTableIndex ]->radialAtt0 );
-
-                if ( verbose == true ) 
-                    std::cout << ( *lights )[ lightsTableIndex ]->radialAtt0 << std::endl;
 
             }
             else if ( tempPropString == "radial_a1:" ) {
 
                 fscanf( stream, "%f", &( *lights )[ lightsTableIndex ]->radialAtt1 );
 
-                if ( verbose == true ) 
-                    std::cout << ( *lights )[ lightsTableIndex ]->radialAtt1 << std::endl;
-
             }
             else if ( tempPropString == "radial_a2:" ) {
 
                 fscanf( stream, "%f", &( *lights )[ lightsTableIndex ]->radialAtt2 );
-
-                if ( verbose == true ) 
-                    std::cout << ( *lights )[ lightsTableIndex ]->radialAtt1 << std::endl;
 
             }
             else if ( tempPropString == "theta:" ) {
@@ -396,20 +337,10 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                 fscanf( stream, "%f", &( *lights )[ lightsTableIndex ]->theta );
                 ( *lights )[ lightsTableIndex ]->cosineTheta = ( float )cos( ( *lights )[ lightsTableIndex ]->theta * ( M_PI/ 180.f ) );
 
-                if ( verbose == true ) {
-
-                    std::cout << ( *lights )[ lightsTableIndex ]->theta << std::endl;
-                    std::cout << "Calculated cosine theta: " << ( *lights )[ lightsTableIndex ]->cosineTheta << std::endl;
-
-                }
-
             }
             else if ( tempPropString == "angular_a0:" ) {
 
                 fscanf( stream, "%f", &( *lights )[ lightsTableIndex ]->angularAtt0 );
-
-                if ( verbose == true ) 
-                    std::cout << ( *lights )[ lightsTableIndex ]->angularAtt0 << std::endl;
 
             }
             else if ( tempPropString == "direction:" ) {
@@ -419,19 +350,10 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
                     &( *lights )[ lightsTableIndex ]->direction[1],
                     &( *lights )[ lightsTableIndex ]->direction[2] );
 
-                if ( verbose == true ) {
-                    std::cout << ( *lights )[ lightsTableIndex ]->direction[0] << " " 
-                        << ( *lights )[ lightsTableIndex ]->direction[1] << " " 
-                        << ( *lights )[ lightsTableIndex ]->direction[2] << std::endl;
-                }
-
             }
             else if ( tempPropString == "reflection:" ) {
 
                 assert( fscanf( stream, "%f", &( *objects )[ objectsTableIndex ]->reflection ) == 1 );
-
-                if ( verbose == true )
-                    std::cout << ( *objects )[ objectsTableIndex ]->reflection << std::endl;
 
             }
 
@@ -443,9 +365,6 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
             break;
 
         tempObjString = tempObject;
-
-        if ( verbose == true ) 
-            std::cout << "\n\nGot object string: " << tempObjString << std::endl;
 
         if ( tempObjString == endOfScene )
             break;
@@ -464,7 +383,7 @@ int readScene( char *sceneFileName, shape ***objects, camera *camera, int *numbe
 // Recursively calls itself to raytrace a light ray
 //     R_o is the origin position, R_d is the ray's normalized direction vector
 //     Returns an I vector to use for the pixel that casted the original ray
-void recurse( float *R_o, float *R_d, int level, float *I, shape ***objects, int numberOfShapes, light ***lights, int numberOfLights ) {
+void recurse( float *R_o, float *R_d, int level, float *I, shape **objects, int numberOfShapes, light **lights, int numberOfLights ) {
 
     if ( level > maxRecursionLevel ) 
         return;
@@ -474,10 +393,10 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape ***objects, int
 
     for ( int index=0; index<numberOfShapes; index++ ) {
 
-        std::string objectType = ( *objects )[ index ]->getShapeType();
+        std::string objectType = objects[ index ]->getShapeType();
         float intersectedT;
 
-        intersectedT = ( *objects )[ index ]->intersect( R_o, R_d );
+        intersectedT = objects[ index ]->intersect( R_o, R_d );
 
         if ( intersectedT < closestT ) {
 
@@ -488,8 +407,10 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape ***objects, int
                         
     }
 
+    float foundNormal[3] = { 0, 0, 0 };
     float I_ds[3] = { 0, 0, 0 };
     float I_rf[3] = { 0, 0, 0 };
+    float reflectionConstant = 0;
     bool inShadow;
 
     for ( int lightIndex=0; lightIndex<numberOfLights; lightIndex++ ) {
@@ -497,17 +418,11 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape ***objects, int
         inShadow = false;
 
         if ( closestT == std::numeric_limits<float>::infinity() ) {
-
-            if ( verbose == true )
-                std::cout << "No intersecton, in shadow." << std::endl;
                             
             inShadow = true;
 
         }
         else {
-
-            if ( verbose == true )
-                std::cout << "\nCasting ray for intersection." << std::endl;
 
             float L_o[3] = { 0, 0, 0 }; // Increment a tiny amount from the closest T to remove z-fighting
             L_o[0] = R_o[0] + R_d[0] * ( closestT );
@@ -515,7 +430,7 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape ***objects, int
             L_o[2] = R_o[2] + R_d[2] * ( closestT );
 
             float fromIntersectionToLight[3] = { 0, 0, 0 };
-            v3_from_points( fromIntersectionToLight, L_o, ( *lights )[ lightIndex ]->position );
+            v3_from_points( fromIntersectionToLight, L_o, lights[ lightIndex ]->position );
             float L_d[3] = { 0, 0, 0 };
             v3_normalize( L_d, fromIntersectionToLight );
             float toLightMagnitude = v3_length( fromIntersectionToLight );
@@ -526,64 +441,48 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape ***objects, int
 
                 if ( objectIndex != closestObjectIndex ) {
 
-                    intersectedT = ( *objects )[ objectIndex ]->intersect( L_o, L_d );
-
-                    if ( verbose == true )
-                        std::cout << "IntersectedT is " << ( *objects )[ objectIndex ]->getShapeType() << " " << intersectedT << std::endl;
+                    intersectedT = objects[ objectIndex ]->intersect( L_o, L_d );
 
                     if ( intersectedT < toLightMagnitude ) {
 
-                       inShadow = true;
+                        inShadow = true;
                         break;
 
                     }
 
-                }
-
-                                
-
-            }
-
-            if ( verbose == true ) {
-
-                std::cout << "L_o is: " << L_o[0] << " " << L_o[1] << " " << L_o[2] << std::endl;
-                std::cout << "L_d is: " << L_d[0] << " " << L_d[1] << " " << L_d[2] << std::endl;
+                }           
 
             }
 
             if ( inShadow == false ) {
 
-                float foundNormal[3] = { 0, 0, 0 };
+                if ( objects[ closestObjectIndex ]->getShapeType() == "Plane" ) {
 
-                if ( ( *objects )[ closestObjectIndex ]->getShapeType() == "Plane" ) {
-
-                    ( *objects )[ closestObjectIndex ]->getNormal( foundNormal );
-
-                }
-                else if (  ( *objects )[ closestObjectIndex ]->getShapeType() == "Sphere"  ) {
-
-                    foundNormal[0] = L_o[0] - ( *objects )[ closestObjectIndex ]->position[0];
-                    foundNormal[1] = L_o[1] - ( *objects )[ closestObjectIndex ]->position[1];
-                    foundNormal[2] = L_o[2] - ( *objects )[ closestObjectIndex ]->position[2];
+                    objects[ closestObjectIndex ]->getNormal( foundNormal );
+                    reflectionConstant = objects[ closestObjectIndex ]->reflection;
 
                 }
-                else {
-                    std::cerr << "Error: Cannot get reflection normal for invalid shape.";
-                    return -1;
+                else if (  objects[ closestObjectIndex ]->getShapeType() == "Sphere"  ) {
+
+                    foundNormal[0] = L_o[0] - objects[ closestObjectIndex ]->position[0];
+                    foundNormal[1] = L_o[1] - objects[ closestObjectIndex ]->position[1];
+                    foundNormal[2] = L_o[2] - objects[ closestObjectIndex ]->position[2];
+                    reflectionConstant = objects[ closestObjectIndex ]->reflection;
+
                 }
 
                 float normal[3] = { 0, 0, 0 };
                 v3_normalize( normal, foundNormal );
 
                 float O_spec[3] = { 0, 0, 0 };
-                O_spec[0] = ( *objects )[ closestObjectIndex ]->cSpec[0];
-                O_spec[1] = ( *objects )[ closestObjectIndex ]->cSpec[1];
-                O_spec[2] = ( *objects )[ closestObjectIndex ]->cSpec[2];
+                O_spec[0] = objects[ closestObjectIndex ]->cSpec[0];
+                O_spec[1] = objects[ closestObjectIndex ]->cSpec[1];
+                O_spec[2] = objects[ closestObjectIndex ]->cSpec[2];
 
                 float O_diff[3] = { 0, 0, 0 };
-                O_diff[0] = ( *objects )[ closestObjectIndex ]->cDiff[0];
-                O_diff[1] = ( *objects )[ closestObjectIndex ]->cDiff[1];
-                O_diff[2] = ( *objects )[ closestObjectIndex ]->cDiff[2];
+                O_diff[0] = objects[ closestObjectIndex ]->cDiff[0];
+                O_diff[1] = objects[ closestObjectIndex ]->cDiff[1];
+                O_diff[2] = objects[ closestObjectIndex ]->cDiff[2];
 
                 float refl[3] = { 0, 0, 0 };
                 float negLight[3] = { L_d[0], L_d[1], L_d[2] };
@@ -598,9 +497,9 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape ***objects, int
 
                 if ( VdotR > 0 ) {
 
-                    I_spec[0] = O_spec[0] * ( *lights )[ lightIndex ]->color[0] * pow( VdotR, 20 );
-                    I_spec[1] = O_spec[1] * ( *lights )[ lightIndex ]->color[1] * pow( VdotR, 20 );
-                    I_spec[2] = O_spec[2] * ( *lights )[ lightIndex ]->color[2] * pow( VdotR, 20 );
+                    I_spec[0] = O_spec[0] * lights[ lightIndex ]->color[0] * pow( VdotR, 20 );
+                    I_spec[1] = O_spec[1] * lights[ lightIndex ]->color[1] * pow( VdotR, 20 );
+                    I_spec[2] = O_spec[2] * lights[ lightIndex ]->color[2] * pow( VdotR, 20 );
 
                 }
 
@@ -609,46 +508,34 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape ***objects, int
 
                 if ( NdotL > 0 ) {
 
-                    I_diff[0] = O_diff[0] * ( *lights )[ lightIndex ]->color[0] * NdotL;
-                    I_diff[1] = O_diff[1] * ( *lights )[ lightIndex ]->color[1] * NdotL;
-                    I_diff[2] = O_diff[2] * ( *lights )[ lightIndex ]->color[2] * NdotL;
+                    I_diff[0] = O_diff[0] * lights[ lightIndex ]->color[0] * NdotL;
+                    I_diff[1] = O_diff[1] * lights[ lightIndex ]->color[1] * NdotL;
+                    I_diff[2] = O_diff[2] * lights[ lightIndex ]->color[2] * NdotL;
 
                 }
 
-                float f_rad = 1.f / ( ( *lights )[ lightIndex ]->radialAtt0 
-                    + ( *lights )[ lightIndex ]->radialAtt1 * toLightMagnitude 
-                    + ( *lights )[ lightIndex ]->radialAtt2 * toLightMagnitude * toLightMagnitude );
+                float f_rad = 1.f / ( lights[ lightIndex ]->radialAtt0 
+                    + lights[ lightIndex ]->radialAtt1 * toLightMagnitude 
+                    + lights[ lightIndex ]->radialAtt2 * toLightMagnitude * toLightMagnitude );
 
                 float V_o[3] = { L_d[0], L_d[1], L_d[2] };
                 v3_scale( V_o, -1 );
 
                 float normalizedDirection[3] = { 0, 0, 0 };
-                v3_normalize( normalizedDirection, ( *lights )[ lightIndex ]->direction );
+                v3_normalize( normalizedDirection, lights[ lightIndex ]->direction );
                 float angDot = v3_dot_product( V_o, normalizedDirection );
                 float f_ang;
 
-                if ( ( *lights )[ lightIndex]->cosineTheta == 0 )
+                if ( lights[ lightIndex]->cosineTheta == 0 )
                     f_ang = 1.f;
-                else if ( angDot >= ( *lights )[ lightIndex ]->cosineTheta )
-                    f_ang = pow( ( angDot ), ( *lights )[ lightIndex ]->angularAtt0 );
+                else if ( angDot >= lights[ lightIndex ]->cosineTheta )
+                    f_ang = pow( ( angDot ), lights[ lightIndex ]->angularAtt0 );
                 else
                     f_ang = 0.f;
 
                 I_ds[0] += f_rad * f_ang * ( I_spec[0] + I_diff[0] );
                 I_ds[1] += f_rad * f_ang * ( I_spec[1] + I_diff[1] );
                 I_ds[2] += f_rad * f_ang * ( I_spec[2] + I_diff[2] );
-
-                if ( verbose == true ) {
-
-                    std::cout << "In light." << std::endl;
-                    std::cout << "O_spec is: " << O_spec[0] << " "<< O_spec[1] << " " << O_spec[2] << std::endl;
-                    std::cout << "O_diff is: " << O_diff[0] << " "<< O_diff[1] << " " << O_diff[2] << std::endl;
-                    std::cout << "I_spec is: " << I_spec[0] << " "<< I_spec[1] << " " << I_spec[2] << std::endl;
-                    std::cout << "I_diff is: " << I_diff[0] << " "<< I_diff[1] << " " << I_diff[2] << std::endl;
-                    std::cout << "Radial Attenuation is: " << f_rad << std::endl;
-                    std::cout << "Angular Attenuation is: " << f_ang << std::endl;
-
-                }
                                 
             }
             else
@@ -657,10 +544,34 @@ void recurse( float *R_o, float *R_d, int level, float *I, shape ***objects, int
         }
 
     }
-                        
-    I[0] = clamp( I[0], 0, 1 );
-    I[1] = clamp( I[1], 0, 1 );
-    I[2] = clamp( I[2], 0, 1 );
+    
+    if ( inShadow == false ) {
+
+        // Intersection position in origin + t * direction
+        float reflectionPosition[3] = { R_d[1], R_d[2], R_d[3] };
+        v3_scale( reflectionPosition, closestT );
+        v3_add( reflectionPosition, R_o, reflectionPosition );
+
+        float reflectionDirection[3] = { 0.f, 0.f, 0.f };
+        v3_reflect( reflectionDirection, R_d, foundNormal );
+        v3_normalize( reflectionDirection, reflectionDirection );
+
+        // Make sure this recurses into I_rf not I
+        recurse( reflectionPosition, reflectionDirection, level + 1, I_rf, objects, numberOfShapes, lights, numberOfLights ); 
+        
+        float dsConstant = 1 - reflectionConstant;
+        I[0] = I_ds[0] * dsConstant + I_rf[0] * reflectionConstant;
+        I[1] = I_ds[1] * dsConstant + I_rf[1] * reflectionConstant;
+        I[2] = I_ds[2] * dsConstant + I_rf[2] * reflectionConstant;
+
+    }
+    else {
+
+        I[0] = 0;
+        I[1] = 0;
+        I[2] = 0;
+
+    }
 
 }
 
@@ -705,13 +616,15 @@ int main(int argc, char *argv[])
                     float rDistX = -0.5f * camera.width + imgX * ( camera.width / imgWidth ) + ( camera.width / imgWidth ) / 2.0f;
 
                     float rVector[3] = { rDistX, rDistY, -1 }; 
-                    float R_d[3] = { 0, 0, 0 };
+                    float R_d[3] = { 0.f, 0.f, 0.f };
                     v3_normalize( R_d, rVector );
+                    float I[3] = { 0.f, 0.f, 0.f };
 
-                    recurse(  );
+                    recurse( R_o, R_d, 0, I, objects, numberOfShapes, lights, numberOfLights );
 
-                    if ( verbose == true )
-                        std::cout << "Clamped RGB: " << I[0] << " " << I[1] << " " << I[2] << std::endl;
+                    I[0] = clamp( I[0], 0, 1 );
+                    I[1] = clamp( I[1], 0, 1 );
+                    I[2] = clamp( I[2], 0, 1 );
 
                     uint8_t outputRGB[3] = { 0, 0, 0 };
                     outputRGB[0] = I[0] * 255;
@@ -749,8 +662,6 @@ int main(int argc, char *argv[])
             delete lights[ index ];
 
         delete[] lights;
-
-        
 
     }
 
